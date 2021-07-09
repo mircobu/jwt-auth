@@ -216,6 +216,11 @@ class Lcobucci extends Provider implements JWT
         if (! array_key_exists($this->algo, $this->signers)) {
             throw new JWTException('The given algorithm could not be found');
         }
+        
+        // for ES256, ES384 and ES512 we need add a SignatureConverter into the constructor
+        if( str_starts_with( $this->algo, 'ES') ){
+            return $this->signers[$this->algo]::create();
+        }
 
         return new $this->signers[$this->algo];
     }
